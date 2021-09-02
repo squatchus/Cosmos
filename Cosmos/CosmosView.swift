@@ -147,6 +147,7 @@ Shows: ★★★★☆ (123)
   private func createTextLayer(_ text: String, layers: [CALayer]) -> CALayer {
     let textLayer = CosmosLayerHelper.createTextLayer(text,
       font: settings.textFont, color: settings.textColor)
+    textLayer.truncationMode = .end
     
     let starsSize = CosmosSize.calculateSizeToFitLayers(layers)
     
@@ -206,6 +207,21 @@ Shows: ★★★★☆ (123)
   override open var intrinsicContentSize:CGSize {
     return viewSize
   }
+
+    open override func sizeThatFits(_ size: CGSize) -> CGSize {
+        return .init(width: min(size.width, viewSize.width), height: viewSize.height)
+    }
+
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+        guard let sublayers = layer.sublayers else { return }
+
+        for layer in sublayers {
+            if let textLayer = layer as? CATextLayer {
+                textLayer.frame = .init(x: 0, y: 0, width: 32, height: 14)
+            }
+        }
+    }
   
   /**
    
